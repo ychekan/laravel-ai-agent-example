@@ -1,0 +1,10 @@
+Generate 3 different search queries for this question.
+Return JSON array.
+
+You MUST return ONLY valid JSON.
+
+Question:
+{question}
+
+Format:
+["query1", "query2", "query3"]

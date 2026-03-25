@@ -1,0 +1,95 @@
+services:
+  rag_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /var/www/html
+    container_name: rag_app
+    depends_on:
+      - rag_postgres
+      - rag_redis
+      - rag_qdrant
+      - rag_ollama
+    volumes:
+      - ./src:/var/www/html
+      - ./src/storage:/var/www/html/storage
+    networks:
+      - rag
+
+  rag_nginx:
+    image: nginx:alpine
+    container_name: rag_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - rag_app
+    networks:
+      - rag
+
+  rag_queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag_queue
+    working_dir: /var/www/html
+    command: php artisan queue:work --tries=3 --timeout=300
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - rag_app
+      - rag_redis
+      - rag_postgres
+    networks:
+      - rag
+
+  rag_postgres:
+    image: postgres:16
+    container_name: rag_postgres
+    environment:
+      POSTGRES_DB: rag_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/database:/var/lib/postgresql/data
+    networks:
+      - rag
+
+  rag_redis:
+    image: redis:7
+    container_name: rag_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker/redis:/data
+    networks:
+      - rag
+
+  rag_qdrant:
+    image: qdrant/qdrant
+    container_name: rag_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./docker/qdrant:/qdrant/storage
+    networks:
+      - rag
+
+  rag_ollama:
+    image: ollama/ollama
+    container_name: rag_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./docker/ollama:/ollama
+    networks:
+      - rag
+
+networks:
+  rag:
+    driver: bridge

@@ -1,0 +1,11 @@
+Rewrite the user question into a better search query for document retrieval.
+Return valid JSON only.
+
+Original question:
+{question}
+
+Weak context:
+{context}
+
+Format:
+{"query": "rewritten query"}

@@ -1,0 +1,11 @@
+Return valid JSON only.
+
+Question: "{question}"
+
+Decide whether this question requires searching documents.
+Examples:
+- factual question about product/policy/manual -> true
+- greeting/small talk -> false
+
+Format:
+{"retrieve": true}
