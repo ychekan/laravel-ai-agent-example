@@ -28,3 +28,5 @@ Thumbs.db
 !/docker/qdrant/.gitkeep
 /docker/redis/*
 !/docker/redis/.gitkeep
+/docker/ollama/*
+!/docker/ollama/.gitkeep
