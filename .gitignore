@@ -23,5 +23,8 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /docker/database/*
+!/docker/database/.gitkeep
 /docker/qdrant/*
+!/docker/qdrant/.gitkeep
 /docker/redis/*
+!/docker/redis/.gitkeep
